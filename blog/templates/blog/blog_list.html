@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+{% block title %}Blog{% endblock %}
+
+{% block content %}
+<section class="section">
+    <h1>A Blog About Software Development And Life</h1>
+    <div class="blog-grid">
+        {% for post in posts %}
+            <a href="{% url 'blog_detail' post.slug %}" class="blog-card">
+                {% if post.cover_image %}
+                    <img src="{{ post.cover_image.url }}" alt="{{ post.title }}">
+                {% endif %}
+                <h3>{{ post.title }}</h3>
+                <p>{{ post.excerpt }}</p>
+                <span class="post-date">{{ post.published_at|date:"F j, Y" }}</span>
+            </a>
+        {% empty %}
+            <p>No posts published yet.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

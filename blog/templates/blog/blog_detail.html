@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<section class="section">
+    <a href="{% url 'blog_list' %}">&larr; Back to Blog</a>
+    <h1>{{ post.title }}</h1>
+    <p class="post-date">{{ post.published_at|date:"F j, Y" }}</p>
+    {% if post.cover_image %}
+        <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" class="post-cover">
+    {% endif %}
+    <div class="post-content">
+        {{ post.content|linebreaks }}
+    </div>
+</section>
+{% endblock %}

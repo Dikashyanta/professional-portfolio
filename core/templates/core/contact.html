@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+{% block title %}Contact{% endblock %}
+
+{% block content %}
+<section class="section">
+    <h1>Contact</h1>
+    <p>Interested in hiring me for your project or just want to say hi? Fill in the form below or email me at
+        <a href="mailto:{{ profile.email }}">{{ profile.email }}</a>.
+    </p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p class="form-success">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <h2 class="form-heading">Get In Touch</h2>
+
+    <form method="post" class="contact-form">
+        {% csrf_token %}
+        <div class="form-row">
+            <input type="text" name="name" placeholder="Name" required>
+            <input type="email" name="email" placeholder="Email" required>
+        </div>
+
+        <select name="service">
+            <option value="">Select a service package you're interested in...</option>
+            <option value="web-development">Web Development</option>
+            <option value="consulting">Consulting</option>
+            <option value="other">Other</option>
+        </select>
+
+        <textarea name="message" placeholder="Enter your message" rows="8" required></textarea>
+
+        <button type="submit" class="btn btn-primary">Send Now</button>
+    </form>
+</section>
+{% endblock %}

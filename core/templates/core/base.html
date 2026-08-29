@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ profile.name }}{% endblock %} — Portfolio</title>
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <div class="layout">
+
+        <aside class="sidebar">
+            <h1 class="sidebar-name">{{ profile.name }}</h1>
+
+            {% if profile.profile_image %}
+                <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="sidebar-photo">
+            {% endif %}
+
+            <p class="sidebar-bio">Hi, my name is {{ profile.name }} and I'm a {{ profile.title }}. Welcome to my personal website!</p>
+
+         <div class="sidebar-socials">
+    {% if profile.github_url %}<a href="{{ profile.github_url }}" target="_blank"><i class="fa-brands fa-github"></i></a>{% endif %}
+    {% if profile.linkedin_url %}<a href="{{ profile.linkedin_url }}" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>{% endif %}
+    {% if profile.twitter_url %}<a href="{{ profile.twitter_url }}" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>{% endif %}
+</div>
+
+            <nav class="sidebar-nav">
+    <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}"><i class="fa-solid fa-user"></i> About Me</a>
+    <a href="{% url 'portfolio' %}" class="{% if request.resolver_match.url_name == 'portfolio' %}active{% endif %}"><i class="fa-solid fa-briefcase"></i> Portfolio</a>
+    <a href="{% url 'resume' %}" class="{% if request.resolver_match.url_name == 'resume' %}active{% endif %}"><i class="fa-solid fa-file-lines"></i> Resume</a>
+    <a href="{% url 'blog_list' %}" class="{% if 'blog' in request.resolver_match.url_name %}active{% endif %}"><i class="fa-solid fa-rss"></i> Blog</a>
+    <a href="{% url 'contact' %}" class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"><i class="fa-solid fa-envelope"></i> Contact</a>
+</nav>
+
+            <button id="theme-toggle" class="theme-toggle">
+                <span id="theme-toggle-label">Dark Mode</span>
+            </button>
+        </aside>
+
+        <main class="main-content">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+    </div>
+
+    <script src="{% static 'core/js/theme.js' %}"></script>
+</body>
+</html>

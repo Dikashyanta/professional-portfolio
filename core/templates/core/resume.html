@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+{% block title %}Resume{% endblock %}
+
+{% block content %}
+<section class="section">
+    <h1>Online Resume</h1>
+    {% if profile.resume %}
+        <a href="{{ profile.resume.url }}" class="btn btn-primary" download>Download PDF Version</a>
+    {% endif %}
+
+    <div class="resume-header">
+        {% if profile.profile_image %}
+            <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="resume-photo">
+        {% endif %}
+        <div>
+            <h2>{{ profile.name }}</h2>
+            <p>{{ profile.title }}</p>
+            <p>{{ profile.bio }}</p>
+        </div>
+    </div>
+
+    <div class="resume-body">
+        <div class="resume-main">
+            <h3><span class="bar"></span>Skills</h3>
+            {% for category, skills in skills_by_category.items %}
+                <div class="skill-block">
+                    <h4>{{ category }}</h4>
+                    <ul>
+                        {% for skill in skills %}
+                            <li>{{ skill.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
