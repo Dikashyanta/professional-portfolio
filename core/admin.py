@@ -13,9 +13,10 @@ class SkillAdmin(admin.ModelAdmin):
     list_filter = ('category',)
 
 
+
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'featured', 'order', 'created_at')
+    list_display = ('title', 'client', 'featured', 'order', 'created_at')
     list_filter = ('featured',)
     prepopulated_fields = {'slug': ('title',)}
     filter_horizontal = ('tech_stack',)

@@ -15,22 +15,23 @@
             <a href="{% url 'resume' %}" class="btn btn-secondary">View Resume</a>
         </div>
     </div>
-    {% if profile.profile_image %}
-        <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="hero-photo">
+    {% if profile.hero_image %}
+        <img src="{{ profile.hero_image.url }}" alt="{{ profile.name }}" class="hero-photo">
     {% endif %}
 </section>
 
 <section class="section">
     <h2><span class="bar"></span>What I do</h2>
-    <div class="skills-grid">
-        {% for category, skills in skills_by_category.items %}
-            <div class="skill-block">
-                <h4>{{ category }}</h4>
-                <ul>
-                    {% for skill in skills %}
-                        <li>{{ skill.name }}</li>
-                    {% endfor %}
-                </ul>
+    <div class="whatido-grid">
+        {% for skill in skills %}
+            <div class="whatido-card">
+                <div class="whatido-icons">
+                    {% if skill.icon %}
+                        <i class="{{ skill.icon }}"></i>
+                    {% endif %}
+                </div>
+                <h4>{{ skill.name }}</h4>
+                <p>{{ skill.description }}</p>
             </div>
         {% endfor %}
     </div>
@@ -60,19 +61,26 @@
 
 <section class="section">
     <h2><span class="bar"></span>Featured Projects</h2>
-    <div class="projects-grid">
+    <div class="featured-projects-grid">
         {% for project in projects %}
-            <div class="project-card">
+            <div class="featured-project-card"
+                 onclick="openProjectModal(
+                     '{{ project.title|escapejs }}',
+                     '{{ project.description|escapejs }}',
+                     '{{ project.image.url }}',
+                     '{{ project.client|escapejs }}',
+                     '{{ project.demo_url|default:""|escapejs }}',
+                     '{{ project.github_url|default:""|escapejs }}'
+                 )">
                 {% if project.image %}
                     <img src="{{ project.image.url }}" alt="{{ project.title }}">
                 {% endif %}
-                <div class="project-info">
+                <div class="featured-project-info">
                     <h3>{{ project.title }}</h3>
                     <p>{{ project.short_description }}</p>
-                    <div class="project-links">
-                        {% if project.demo_url %}<a href="{{ project.demo_url }}" target="_blank">Live Demo</a>{% endif %}
-                        {% if project.github_url %}<a href="{{ project.github_url }}" target="_blank">GitHub</a>{% endif %}
-                    </div>
+                    {% if project.client %}
+                        <span class="project-client">Client: {{ project.client }}</span>
+                    {% endif %}
                 </div>
             </div>
         {% empty %}
@@ -81,6 +89,55 @@
     </div>
     <a href="{% url 'portfolio' %}" class="btn btn-primary">View Portfolio</a>
 </section>
+
+<div id="project-modal" class="modal-overlay" onclick="closeProjectModal(event)">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeProjectModal(event)">&times;</button>
+        <img id="modal-image" src="" alt="">
+        <h3 id="modal-title"></h3>
+        <p id="modal-client" class="project-client"></p>
+        <p id="modal-description"></p>
+        <button id="modal-visit-btn" class="btn btn-primary" onclick="visitProjectLink()">Visit Project</button>
+    </div>
+</div>
+
+<script>
+    let currentProjectLink = '';
+
+    function openProjectModal(title, description, image, client, demoUrl, githubUrl) {
+        document.getElementById('modal-title').textContent = title;
+        document.getElementById('modal-description').textContent = description;
+        document.getElementById('modal-image').src = image;
+
+        const clientEl = document.getElementById('modal-client');
+        clientEl.textContent = client ? 'Client: ' + client : '';
+        clientEl.style.display = client ? 'block' : 'none';
+
+        currentProjectLink = demoUrl || githubUrl || '';
+
+        const visitBtn = document.getElementById('modal-visit-btn');
+        if (currentProjectLink) {
+            visitBtn.style.display = 'inline-block';
+            visitBtn.textContent = demoUrl ? 'View Live Demo' : 'View on GitHub';
+        } else {
+            visitBtn.style.display = 'none';
+        }
+
+        document.getElementById('project-modal').classList.add('active');
+    }
+
+    function closeProjectModal(event) {
+        if (event.target.id === 'project-modal' || event.target.classList.contains('modal-close')) {
+            document.getElementById('project-modal').classList.remove('active');
+        }
+    }
+
+    function visitProjectLink() {
+        if (currentProjectLink) {
+            window.open(currentProjectLink, '_blank');
+        }
+    }
+</script>
 
 {% if posts %}
 <section class="section">

@@ -18,9 +18,15 @@ def home(request):
         'skills_by_category': skills_by_category,
     }
     return render(request, 'core/home.html', context)
-from django.shortcuts import render, get_object_or_404
-from .models import Profile, Skill, Project, Testimonial
+from django.conf import settings
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.shortcuts import redirect, render
+
 from blog.models import Post
+
+from .forms import ContactForm
+from .models import Project, Skill, Testimonial
 
 
 def home(request):
@@ -29,15 +35,12 @@ def home(request):
     posts = Post.objects.filter(published=True)[:3]
 
     skills = Skill.objects.all()
-    skills_by_category = {}
-    for skill in skills:
-        skills_by_category.setdefault(skill.get_category_display(), []).append(skill)
 
     context = {
         'projects': projects,
         'testimonials': testimonials,
         'posts': posts,
-        'skills_by_category': skills_by_category,
+        'skills': skills,
     }
     return render(request, 'core/home.html', context)
 

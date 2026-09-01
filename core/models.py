@@ -4,11 +4,14 @@ from django.db import models
 class Profile(models.Model):
     """Singleton-style model for your About/Hero content."""
     name = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, blank=True, help_text="e.g. Senior Software Engineer")
+    location = models.CharField(max_length=100, blank=True)
+    years_experience = models.PositiveIntegerField(blank=True, null=True)
     tagline = models.CharField(max_length=200, help_text="e.g. Full-stack developer building fast, accessible web apps")
     bio = models.TextField()
     profile_image = models.ImageField(upload_to='profile/', blank=True, null=True)
+    hero_image = models.ImageField(upload_to='profile/', blank=True, null=True, help_text="Larger image shown next to the hero heading")
     resume = models.FileField(upload_to='resume/', blank=True, null=True)
-
     email = models.EmailField()
     github_url = models.URLField(blank=True)
     linkedin_url = models.URLField(blank=True)
@@ -34,7 +37,8 @@ class Skill(models.Model):
 
     name = models.CharField(max_length=50)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-    icon = models.CharField(max_length=50, blank=True, help_text="Optional: icon class name or short code")
+    icon = models.CharField(max_length=50, blank=True, help_text="FontAwesome icon class, e.g. fa-brands fa-python")
+    description = models.TextField(blank=True, help_text="What you can do with this skill")
 
     class Meta:
         ordering = ['category', 'name']
@@ -51,6 +55,7 @@ class Project(models.Model):
     image = models.ImageField(upload_to='projects/')
     tech_stack = models.ManyToManyField(Skill, blank=True)
 
+    client = models.CharField(max_length=100, blank=True, help_text="e.g. Google, Dropbox")
     demo_url = models.URLField(blank=True)
     github_url = models.URLField(blank=True)
 
@@ -62,15 +67,6 @@ class Project(models.Model):
 
     class Meta:
         ordering = ['order', '-created_at']
-
-    def __str__(self):
-        return self.title
-
-
-class Experience(models.Model):
-    title = models.CharField(max_length=100, help_text="e.g. Senior Software Engineer")
-    location = models.CharField(max_length=100, blank=True)
-    years_experience = models.PositiveIntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.title

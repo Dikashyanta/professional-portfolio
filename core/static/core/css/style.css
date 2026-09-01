@@ -259,25 +259,49 @@ a:hover {
 }
 
 /* ---------- Skills ---------- */
-.skills-grid {
+.whatido-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem 2rem;
 }
 
-.skill-block h4 {
-    color: var(--accent);
-    margin-bottom: 0.5rem;
+.whatido-card {
+    background: transparent;
+    border: none;
+    padding: 0;
 }
 
-.skill-block ul {
-    list-style: none;
+.whatido-icons {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+    font-size: 2rem;
+}
+
+.whatido-card h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.whatido-card p {
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
 }
 
-.skill-block li {
-    margin-bottom: 0.3rem;
+@media (max-width: 1000px) {
+    .whatido-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .whatido-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ---------- Testimonials ---------- */
@@ -534,5 +558,156 @@ a:hover {
     }
     .main-content {
         padding: 2rem 1.5rem;
+    }
+}
+
+/* ---------- Project Modal ---------- */
+.featured-project-card {
+    cursor: pointer;
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 2rem;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.2rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.8rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+}
+
+.modal-box img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1.2rem;
+}
+
+.modal-box h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.modal-box .project-client {
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.modal-box p#modal-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+
+
+
+/* ---------- Tech brand colors ---------- */
+.fa-js { color: #f7df1e; }
+.fa-python { color: #3776ab; }
+.fa-html5 { color: #e34f26; }
+.fa-css3-alt { color: #1572b6; }
+.fa-react { color: #61dafb; }
+.fa-node-js { color: #339933; }
+.fa-git-alt { color: #f05032; }
+.fa-database { color: #4ade80; }
+.fa-angular { color: #dd0031; }
+.fa-vuejs { color: #42b883; }
+.fa-php { color: #777bb4; }
+.fa-github { color: #ffffff; }
+
+
+
+
+
+/* ---------- Featured Projects (homepage, image+text side by side) ---------- */
+.featured-projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border-color);
+    margin-bottom: 2rem;
+}
+
+.featured-project-card {
+    background: var(--bg-card);
+    display: flex;
+    gap: 1.2rem;
+    padding: 1.5rem;
+    cursor: pointer;
+}
+
+.featured-project-card img {
+    width: 160px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.featured-project-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    text-decoration: underline;
+}
+
+.featured-project-info p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+}
+
+.project-client {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+@media (max-width: 700px) {
+    .featured-projects-grid {
+        grid-template-columns: 1fr;
+    }
+    .featured-project-card {
+        flex-direction: column;
+    }
+    .featured-project-card img {
+        width: 100%;
+        height: 180px;
     }
 }
