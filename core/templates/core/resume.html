@@ -1,38 +1,251 @@
 {% extends 'core/base.html' %}
+{% load static %}
 {% block title %}Resume{% endblock %}
 
 {% block content %}
-<section class="section">
-    <h1>Online Resume</h1>
-    {% if profile.resume %}
-        <a href="{{ profile.resume.url }}" class="btn btn-primary" download>Download PDF Version</a>
+<div class="resume-page">
+
+  {% if not resume_profile %}
+    <div class="resume-page-header">
+      <h1 class="resume-page-title">Online Resume</h1>
+      <p style="color:var(--text-secondary);margin-top:1rem;">
+        No resume data yet. Go to
+        <a href="/admin/core/resumeprofile/">Admin → Resume</a>
+        to fill in your details.
+      </p>
+    </div>
+  {% else %}
+
+  <!-- Page heading + download -->
+  <div class="resume-page-header">
+    <h1 class="resume-page-title">Online Resume</h1>
+    {% if resume_profile.resume_pdf %}
+      <a href="{{ resume_profile.resume_pdf.url }}" class="resume-download-btn" download>
+        <i class="fa-solid fa-file-arrow-down"></i> Download PDF Version
+      </a>
     {% endif %}
+  </div>
 
-    <div class="resume-header">
-        {% if profile.profile_image %}
-            <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="resume-photo">
-        {% endif %}
-        <div>
-            <h2>{{ profile.name }}</h2>
-            <p>{{ profile.title }}</p>
-            <p>{{ profile.bio }}</p>
+  <!-- Name / contact card -->
+  <div class="resume-card resume-namecard">
+    <div class="resume-namecard-left">
+      <h2 class="resume-fullname">{{ resume_profile.full_name|upper }}</h2>
+      {% if resume_profile.job_title %}
+        <p class="resume-jobtitle">{{ resume_profile.job_title }}</p>
+      {% endif %}
+    </div>
+    <div class="resume-namecard-right">
+      {% if resume_profile.phone %}
+        <div class="resume-contact-row">
+          <i class="fa-solid fa-phone"></i>
+          <span>{{ resume_profile.phone }}</span>
         </div>
+      {% endif %}
+      {% if resume_profile.email %}
+        <div class="resume-contact-row">
+          <i class="fa-solid fa-envelope"></i>
+          <a href="mailto:{{ resume_profile.email }}">{{ resume_profile.email }}</a>
+        </div>
+      {% endif %}
+      {% if resume_profile.website %}
+        <div class="resume-contact-row">
+          <i class="fa-solid fa-globe"></i>
+          <a href="{{ resume_profile.website }}" target="_blank">{{ resume_profile.website|cut:"https://" }}</a>
+        </div>
+      {% endif %}
+      {% if resume_profile.github_url %}
+        <div class="resume-contact-row">
+          <i class="fa-brands fa-github"></i>
+          <a href="{{ resume_profile.github_url }}" target="_blank">{{ resume_profile.github_url|cut:"https://" }}</a>
+        </div>
+      {% endif %}
+      {% if resume_profile.linkedin_url %}
+        <div class="resume-contact-row">
+          <i class="fa-brands fa-linkedin"></i>
+          <a href="{{ resume_profile.linkedin_url }}" target="_blank">{{ resume_profile.linkedin_url|cut:"https://www." }}</a>
+        </div>
+      {% endif %}
+      {% if resume_profile.location %}
+        <div class="resume-contact-row">
+          <i class="fa-solid fa-location-dot"></i>
+          <span>{{ resume_profile.location }}</span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Bio card -->
+  {% if resume_profile.bio or resume_profile.photo %}
+  <div class="resume-card resume-biocard">
+    {% if resume_profile.photo %}
+      <img src="{{ resume_profile.photo.url }}" alt="{{ resume_profile.full_name }}" class="resume-bio-photo">
+    {% endif %}
+    {% if resume_profile.bio %}
+      <p class="resume-bio-text">{{ resume_profile.bio }}</p>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- Two-column body -->
+  <div class="resume-columns">
+
+    <!-- LEFT: Work Experience -->
+    <div class="resume-col-main">
+
+      {% with jobs=resume_profile.work_experiences.all %}
+      {% if jobs %}
+      <div class="resume-section">
+        <h3 class="resume-section-title"><span class="resume-section-bar"></span> Work Experiences</h3>
+        {% for job in jobs %}
+          <div class="resume-job">
+            <div class="resume-job-header">
+              <strong class="resume-job-title">{{ job.job_title }}</strong>
+              <span class="resume-job-company">
+                {{ job.company }}{% if job.start_date %} | {{ job.start_date }}{% if job.end_date %} – {{ job.end_date }}{% endif %}{% endif %}
+              </span>
+            </div>
+            {% if job.description %}
+              <p class="resume-job-desc">{{ job.description }}</p>
+            {% endif %}
+            {% if job.get_bullets %}
+              <ul class="resume-job-bullets">
+                {% for bullet in job.get_bullets %}
+                  <li>{{ bullet }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+
+      {% with resume_projects=resume_profile.projects.all %}
+      {% if resume_projects %}
+      <div class="resume-section">
+        <h3 class="resume-section-title"><span class="resume-section-bar"></span> Projects</h3>
+        {% for proj in resume_projects %}
+          <div class="resume-project">
+            <div class="resume-project-header">
+              <strong class="resume-project-title">{{ proj.title }}</strong>
+              {% if proj.is_open_source %}
+                <span class="resume-badge-oss">Open Source</span>
+              {% endif %}
+            </div>
+            {% if proj.description %}
+              <p class="resume-project-desc">{{ proj.description }}</p>
+            {% endif %}
+            {% if proj.get_tech_list %}
+              <div class="resume-project-tags">
+                {% for tech in proj.get_tech_list %}
+                  <span class="resume-tech-tag">{{ tech }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+            <div class="resume-project-links">
+              {% if proj.github_url %}
+                <a href="{{ proj.github_url }}" target="_blank" rel="noopener" class="resume-project-btn resume-project-btn-gh">
+                  <i class="fa-brands fa-github"></i> GitHub
+                </a>
+              {% endif %}
+              {% if proj.live_url %}
+                <a href="{{ proj.live_url }}" target="_blank" rel="noopener" class="resume-project-btn resume-project-btn-live">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+
     </div>
 
-    <div class="resume-body">
-        <div class="resume-main">
-            <h3><span class="bar"></span>Skills</h3>
-            {% for category, skills in skills_by_category.items %}
-                <div class="skill-block">
-                    <h4>{{ category }}</h4>
-                    <ul>
-                        {% for skill in skills %}
-                            <li>{{ skill.name }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endfor %}
-        </div>
+    <!-- RIGHT: Skills, Education, Awards, Languages, Interests -->
+    <div class="resume-col-side">
+
+      {% if skills_by_category %}
+      <div class="resume-section">
+        <h3 class="resume-section-title"><span class="resume-section-bar"></span> Skills</h3>
+        {% for category, skills in skills_by_category.items %}
+          <div class="resume-skill-group">
+            <h4 class="resume-skill-category">{{ category }}</h4>
+            <ul class="resume-skill-list">
+              {% for skill in skills %}
+                <li>{{ skill.name }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% with edu_list=resume_profile.education_entries.all %}
+      {% if edu_list %}
+      <div class="resume-section">
+        <h3 class="resume-section-title"><span class="resume-section-bar"></span> Education</h3>
+        {% for edu in edu_list %}
+          <div class="resume-edu-item">
+            <strong class="resume-edu-degree">{{ edu.degree }}</strong>
+            <span class="resume-edu-institution">{{ edu.institution }}</span>
+            {% if edu.start_year or edu.end_year %}
+              <span class="resume-edu-years">{{ edu.start_year }}{% if edu.end_year %} – {{ edu.end_year }}{% endif %}</span>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+
+      {% with awards=resume_profile.awards.all %}
+      {% if awards %}
+      <div class="resume-section">
+        <h3 class="resume-section-title"><span class="resume-section-bar"></span> Awards</h3>
+        {% for award in awards %}
+          <div class="resume-award-item">
+            <strong class="resume-award-title">{{ award.title }}</strong>
+            {% if award.issuer or award.year %}
+              <span class="resume-award-meta">{{ award.issuer }}{% if award.year %} ({{ award.year }}){% endif %}</span>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+
+      {% with languages=resume_profile.languages.all %}
+      {% if languages %}
+      <div class="resume-section">
+        <h3 class="resume-section-title"><span class="resume-section-bar"></span> Languages</h3>
+        <ul class="resume-lang-list">
+          {% for lang in languages %}
+            <li>
+              <span class="resume-lang-name">{{ lang.name }}</span>
+              {% if lang.proficiency %}<span class="resume-lang-level">({{ lang.proficiency }})</span>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      {% endwith %}
+
+      {% with interests=resume_profile.interests.all %}
+      {% if interests %}
+      <div class="resume-section">
+        <h3 class="resume-section-title"><span class="resume-section-bar"></span> Interests</h3>
+        <ul class="resume-interest-list">
+          {% for interest in interests %}
+            <li>{{ interest.name }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      {% endwith %}
+
     </div>
-</section>
+  </div><!-- end .resume-columns -->
+
+  {% endif %}
+</div><!-- end .resume-page -->
 {% endblock %}

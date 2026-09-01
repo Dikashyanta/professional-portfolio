@@ -1,23 +1,3 @@
-from django.shortcuts import render
-from .models import Profile, Skill, Project
-
-
-def home(request):
-    profile = Profile.objects.first()
-    projects = Project.objects.filter(featured=True)
-    skills = Skill.objects.all()
-
-    # Group skills by category for the template
-    skills_by_category = {}
-    for skill in skills:
-        skills_by_category.setdefault(skill.get_category_display(), []).append(skill)
-
-    context = {
-        'profile': profile,
-        'projects': projects,
-        'skills_by_category': skills_by_category,
-    }
-    return render(request, 'core/home.html', context)
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -26,7 +6,7 @@ from django.shortcuts import redirect, render
 from blog.models import Post
 
 from .forms import ContactForm
-from .models import Project, Skill, Testimonial
+from .models import Profile, Project, Skill, Testimonial
 
 
 def home(request):
@@ -52,20 +32,23 @@ def portfolio(request):
 
 
 def resume(request):
-    skills = Skill.objects.all()
+    from .models import ResumeProfile
+
+    resume_profile = ResumeProfile.objects.prefetch_related(
+        'work_experiences', 'skills', 'education_entries',
+        'awards', 'languages', 'interests',
+    ).first()
+
     skills_by_category = {}
-    for skill in skills:
-        skills_by_category.setdefault(skill.get_category_display(), []).append(skill)
+    if resume_profile:
+        for skill in resume_profile.skills.all():
+            skills_by_category.setdefault(skill.get_category_display(), []).append(skill)
 
-    context = {'skills_by_category': skills_by_category}
+    context = {
+        'resume_profile': resume_profile,
+        'skills_by_category': skills_by_category,
+    }
     return render(request, 'core/resume.html', context)
-
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.core.mail import send_mail
-from django.conf import settings
-from .forms import ContactForm
 
 
 def contact(request):
@@ -89,4 +72,3 @@ def contact(request):
         form = ContactForm()
 
     return render(request, 'core/contact.html', {'form': form})
-
