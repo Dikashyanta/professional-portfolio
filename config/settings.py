@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+
 from decouple import config
 import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,16 +29,35 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me-in-producti
 # Set DEBUG=False in production.
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = [
+configured_hosts = [
     host.strip()
-    for host in config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+    for host in config(
+        'ALLOWED_HOSTS', default='localhost,127.0.0.1,.vercel.app'
+    ).split(',')
     if host.strip()
 ]
-CSRF_TRUSTED_ORIGINS = [
+vercel_hosts = [
+    host
+    for host in (
+        os.getenv('VERCEL_URL'),
+        os.getenv('VERCEL_PROJECT_PRODUCTION_URL'),
+    )
+    if host
+]
+ALLOWED_HOSTS = list(dict.fromkeys(
+    configured_hosts + ['.vercel.app'] + vercel_hosts
+))
+
+configured_origins = [
     origin.strip()
     for origin in config('CSRF_TRUSTED_ORIGINS', default='').split(',')
     if origin.strip()
 ]
+CSRF_TRUSTED_ORIGINS = list(dict.fromkeys(
+    configured_origins
+    + ['https://*.vercel.app']
+    + [f'https://{host}' for host in vercel_hosts]
+))
 
 
 # Application definition
