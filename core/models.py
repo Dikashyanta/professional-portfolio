@@ -90,6 +90,8 @@ class Skill(models.Model):
 
     class Meta:
         ordering = ['category', 'name']
+        verbose_name = 'What I do item'
+        verbose_name_plural = 'What I do'
 
     def __str__(self):
         return self.name

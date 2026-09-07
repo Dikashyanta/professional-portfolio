@@ -15,6 +15,13 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = ('name', 'tagline', 'email')
 
 
+@admin.register(Skill)
+class SkillAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category', 'resume')
+    list_filter = ('category',)
+    search_fields = ('name', 'description')
+
+
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'client', 'featured', 'order', 'created_at')
