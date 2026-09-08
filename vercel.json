@@ -1,5 +1,5 @@
 {
-  "buildCommand": "python manage.py migrate && python manage.py collectstatic --noinput",
+  "buildCommand": "DATABASE_URL=${DATABASE_URL_UNPOOLED:-$DATABASE_URL} python manage.py migrate --noinput && python manage.py collectstatic --noinput",
   "functions": {
     "config/wsgi.py": {
       "maxDuration": 60
