@@ -64,14 +64,13 @@
     <div class="featured-projects-grid">
         {% for project in projects %}
             <div class="featured-project-card"
-                 onclick="openProjectModal(
-                     '{{ project.title|escapejs }}',
-                     '{{ project.description|escapejs }}',
-                     '{{ project.image.url }}',
-                     '{{ project.client|escapejs }}',
-                     '{{ project.demo_url|default:""|escapejs }}',
-                     '{{ project.github_url|default:""|escapejs }}'
-                 )">
+                 data-title="{{ project.title|escapejs }}"
+                 data-description="{{ project.description|escapejs }}"
+                 data-image="{{ project.image.url|default:'' }}"
+                 data-client="{{ project.client|default:''|escapejs }}"
+                 data-demo-url="{{ project.demo_url|default:''|escapejs }}"
+                 data-github-url="{{ project.github_url|default:''|escapejs }}"
+                 onclick="openProjectModalFromDataset(this)">
                 {% if project.image %}
                     <img src="{{ project.image.url }}" alt="{{ project.title }}">
                 {% endif %}
@@ -91,7 +90,7 @@
 </section>
 
 <div id="project-modal" class="modal-overlay" onclick="closeProjectModal(event)">
-    <div class="modal-box">
+    <div class="modal-box">  
         <button class="modal-close" onclick="closeProjectModal(event)">&times;</button>
         <img id="modal-image" src="" alt="">
         <h3 id="modal-title"></h3>

@@ -133,12 +133,16 @@ celerybeat.pid
 
 # Environments
 .env
+.env.local
 .venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Node dependencies
+node_modules/
 
 # Spyder project settings
 .spyderproject
@@ -172,3 +176,5 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
+.neon
+.env.local
