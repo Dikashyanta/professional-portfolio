@@ -14,6 +14,9 @@ from .models import (
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('name', 'tagline', 'email')
 
+    def has_add_permission(self, request):
+        return not Profile.objects.exists()
+
 
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
