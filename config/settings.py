@@ -71,7 +71,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'blog',
+    'ckeditor',
+    'ckeditor_uploader',
+    
 ]
+
+CKEDITOR_UPLOAD_PATH = "blog_uploads/"
+CKEDITOR_IMAGE_BACKEND = "pillow"
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 400,
+        'width': 'auto',
+    },
+}
 
 CLOUDINARY_URL = config('CLOUDINARY_URL', default='')
 if CLOUDINARY_URL:

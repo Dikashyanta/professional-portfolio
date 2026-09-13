@@ -4,7 +4,9 @@ charset-normalizer==3.5.1
 cloudinary==1.46.2
 dj-database-url==3.0.1
 Django==4.2.30
+django-ckeditor==6.7.3
 django-cloudinary-storage==0.3.0
+django-js-asset==2.2.0
 gunicorn==23.0.0
 idna==3.19
 packaging==26.3
